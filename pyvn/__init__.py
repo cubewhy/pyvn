@@ -1,10 +1,26 @@
+from dataclasses import dataclass
 from typing import Callable, Generic, TypeVar
 import pygame
 
+from pyvn.events.bus import EventBus
+from pyvn.events.mouse import MouseEvent
 from pyvn.ui import GameUi
 
 
 T = TypeVar("T")
+
+
+@dataclass
+class InternalState:
+    last_mouse_pos: (int, int) = (0, 0)
+
+
+def process_mouse_events(eventbus: EventBus, internal_state: InternalState):
+    mouse_pos = pygame.mouse.get_pos()
+    if internal_state.last_mouse_pos != mouse_pos:
+        # mouse pos changed, trigger the event
+        eventbus.trigger_event(MouseEvent(mouse_pos[0], mouse_pos[1]))
+    internal_state.last_mouse_pos = mouse_pos
 
 
 def create_game_window(
@@ -23,12 +39,17 @@ def create_game_window(
 
     pygame.display.set_caption(title)
 
+    internal_state = InternalState()
+
     # Create the ui object
     while running:
         ui = GameUi(screen)
+        eventbus = ui.get_eventbus()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
+
+        process_mouse_events(eventbus, internal_state)
 
         # do render
         # 0x[r][g][b]

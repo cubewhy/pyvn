@@ -2,6 +2,8 @@ from abc import ABC, abstractmethod
 from typing import List, Self
 
 from pyvn.components import Component
+from pyvn.events.bus import EventGeneric
+from pyvn.events.mouse import MouseEvent
 
 
 class Layout(ABC):
@@ -18,6 +20,11 @@ class Layout(ABC):
     @abstractmethod
     def next_position(self) -> (int, int):
         pass
+
+    def handle_event(self, event: EventGeneric) -> None:
+        # send events to components
+        if isinstance(event, MouseEvent):
+            pass
 
     def render(self) -> None:
         if self.renderer is None:
