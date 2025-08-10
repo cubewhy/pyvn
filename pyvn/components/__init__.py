@@ -4,6 +4,7 @@ from typing import Self
 
 import pygame
 
+from pyvn.events.mouse import MouseOutEvent, MouseOverEvent
 from pyvn.renderers import Renderer
 
 
@@ -25,25 +26,39 @@ class Component(ABC):
         # Same as css (top, right, bottom, right)
         self._padding = Padding()
 
+        self.x = 0
+        self.y = 0
+
+    def on_mouseover(self, event: MouseOverEvent) -> None:
+        pass
+
+    def on_mouseout(self, event: MouseOutEvent) -> None:
+        pass
+
     @abstractmethod
     def render(self, renderer: Renderer, position: (int, int)) -> None:
         pass
 
     @abstractmethod
-    def size(self) -> (int, int):
+    def get_size(self) -> (int, int):
         pass
 
-    def do_render(self, renderer: Renderer, position: (int, int)) -> None:
+    def get_position(self) -> (int, int):
+        return self.x, self.y
+
+    def set_position(self, pos: (int, int)):
+        self.x, self.y = pos
+
+    def do_render(self, renderer: Renderer) -> None:
         # apply padding to position
-        x, y = position
         position_with_padding = (
-            x + self._padding.left,
-            y + self._padding.top,
+            self.x + self._padding.left,
+            self.y + self._padding.top,
         )
         self.render(renderer, position_with_padding)
 
-    def size_with_padding(self) -> (int, int):
-        width, height = self.size()
+    def get_size_with_padding(self) -> (int, int):
+        width, height = self.get_size()
         # add padding to size
         return (
             self._padding.left + width + self._padding.right,  # width

@@ -3,7 +3,7 @@ from typing import Callable, Generic, TypeVar
 import pygame
 
 from pyvn.events.bus import EventBus
-from pyvn.events.mouse import MouseEvent
+from pyvn.events.mouse import MouseEvent, MouseMoveEvent
 from pyvn.ui import GameUi
 
 
@@ -17,9 +17,11 @@ class InternalState:
 
 def process_mouse_events(eventbus: EventBus, internal_state: InternalState):
     mouse_pos = pygame.mouse.get_pos()
+    mouse_event = MouseEvent(mouse_pos[0], mouse_pos[1])
+    eventbus.trigger_event(mouse_event)
     if internal_state.last_mouse_pos != mouse_pos:
         # mouse pos changed, trigger the event
-        eventbus.trigger_event(MouseEvent(mouse_pos[0], mouse_pos[1]))
+        eventbus.trigger_event(MouseMoveEvent(mouse_event))
     internal_state.last_mouse_pos = mouse_pos
 
 
@@ -49,14 +51,18 @@ def create_game_window(
             if event.type == pygame.QUIT:
                 running = False
 
-        process_mouse_events(eventbus, internal_state)
 
         # do render
         # 0x[r][g][b]
         screen.fill(0x000000)
         # call the render logic here
         game_loop(ui, state)
+        
+        # Pre render
+        ui.pre_render()
 
+        process_mouse_events(eventbus, internal_state)
+        
         # Finally let GameUi to render the components
         ui.render()
 

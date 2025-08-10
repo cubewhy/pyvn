@@ -13,7 +13,7 @@ class VerticalLayout(Layout):
     def next_position(self) -> (int, int):
         x, y = deepcopy(self._next_position)
         component = self.components[self.counter]
-        next_width, next_height = component.size_with_padding()
+        next_width, next_height = component.get_size_with_padding()
         self._next_position[1] += next_height
         self.counter += 1
 

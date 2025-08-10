@@ -17,6 +17,6 @@ class EventBus(object):
     def remove_handler(self, handler: EventHandler) -> None:
         self.handlers.remove(handler)
 
-    def trigger_event(self, event: EventGeneric):
+    def trigger_event(self, event: EventGeneric) -> None:
         for handler in self.handlers:
             handler(event)

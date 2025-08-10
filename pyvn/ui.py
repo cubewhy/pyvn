@@ -3,7 +3,6 @@ from pygame import Surface
 
 from pyvn.events.bus import EventBus
 from pyvn.layouts import Layout
-from pyvn.layouts.vertical import VerticalLayout
 from pyvn.renderers.pygame_renderer import PygameRenderer
 
 
@@ -16,7 +15,7 @@ class GameUi(object):
         self.surface = surface
         self.base_layout: Layout = None
         self.eventbus = EventBus()
-        self.set_base_layout(VerticalLayout())
+        # self.set_base_layout(VerticalLayout())
 
     def get_eventbus(self) -> EventBus:
         return self.eventbus
@@ -33,6 +32,10 @@ class GameUi(object):
         # register event handler
         self.eventbus.add_handler(layout.handle_event)
         return layout
+    
+    def pre_render(self) -> None:
+        if self.base_layout is not None:
+            self.base_layout.apply_positions()
 
     def render(self) -> None:
         if self.base_layout is not None:
