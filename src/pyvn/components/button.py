@@ -2,7 +2,7 @@ from typing import Self
 
 import pygame
 
-from pyvn.events.mouse import MouseDownEvent, MouseOutEvent, MouseOverEvent
+from pyvn.events.mouse import MouseOutEvent, MouseOverEvent
 from pyvn.renderers import Renderer
 from pyvn.components import Component
 from pyvn.types import ColorValue
@@ -33,7 +33,7 @@ class Button(Component):
         self._hover_color = color
         return self
 
-    def text_color(self, color: ColorValue | None) -> Self:
+    def text_color(self, color: ColorValue) -> Self:
         self._text_color = color
         return self
 

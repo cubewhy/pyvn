@@ -8,3 +8,12 @@ dependencies = [
     "pygame>=2.6.1",
     "typing>=3.10.0.0",
 ]
+
+[tool.uv.workspace]
+members = [
+    "pyvn",
+]
+
+[build-system]
+requires = ["uv_build>=0.8.8,<0.9.0"]
+build-backend = "uv_build"
