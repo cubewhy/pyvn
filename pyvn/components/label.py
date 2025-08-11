@@ -18,8 +18,8 @@ class Label(Component):
         self._text_color = color
         return self
 
-    def render(self, renderer: Renderer, position: (int, int)) -> None:
+    def render(self, renderer: Renderer, position: tuple[int, int]) -> None:
         renderer.render_text(position, self._text, self.font, self._text_color)
 
-    def get_size(self) -> (int, int):
+    def get_size(self) -> tuple[int, int]:
         return self.font.size(self._text)

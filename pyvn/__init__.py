@@ -19,7 +19,7 @@ T = TypeVar("T")
 
 @dataclass
 class InternalState:
-    last_mouse_pos: (int, int) = (0, 0)
+    last_mouse_pos: tuple[int, int] = (0, 0)
     mouse_down: bool = False
     mouse_up: bool = False
 
@@ -40,12 +40,12 @@ def process_mouse_events(eventbus: EventBus, internal_state: InternalState):
 
 
 def create_game_window(
-    game_loop: Callable[[UiLike, Generic[T]], None],
-    state: Generic[T],
+    game_loop: Callable[[UiLike, T], None],
+    state: T,
     *,
     title: str = "Python Visual Novel Framework",
     fps_limit: int = 60,
-    resize: (int, int) = (1280, 720),
+    resize: tuple[int, int] = (1280, 720),
 ) -> None:
     pygame.init()
 

@@ -1,4 +1,4 @@
-from typing import Callable, TypeVar
+from typing import Callable, Optional, TypeVar
 
 from pygame import Surface
 
@@ -14,9 +14,9 @@ T = TypeVar("T")
 
 class GameUi(UiLike):
     def __init__(self, surface: Surface) -> None:
-        super().__init__(surface)
+        super()
         self.surface = surface
-        self.base_layout: Layout = None
+        self.base_layout: Optional[Layout] = None
         self.eventbus = EventBus()
         
         self.post_add_component_listener: Callable[[Component], None] | None = None
@@ -33,7 +33,8 @@ class GameUi(UiLike):
         renderer = PygameRenderer(self.surface)
         layout.renderer = renderer
         layout.ui = self
-        layout.on_post_add_component(self.post_add_component_listener)
+        if self.post_add_component_listener is not None:
+            layout.on_post_add_component(self.post_add_component_listener)
         self.base_layout = layout
         # register event handler
         # self.eventbus.add_handler(layout.handle_event)

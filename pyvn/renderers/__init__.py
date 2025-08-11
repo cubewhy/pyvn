@@ -10,7 +10,7 @@ class Renderer(ABC):
     @abstractmethod
     def render_text(
         self,
-        position: (int, int),
+        position: tuple[int, int],
         text: str,
         font: Font,
         text_color: ColorValue = (255, 255, 255),

@@ -11,7 +11,7 @@ class PygameRenderer(Renderer):
 
     def render_text(
         self,
-        position: (int, int),
+        position: tuple[int, int],
         text: str,
         # TODO: use font from abstract layer
         font: Font,

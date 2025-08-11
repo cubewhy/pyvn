@@ -12,7 +12,7 @@ class VerticalLayout(Layout):
         if self.parent_layout is not None:
             self._next_position = list(self.parent_layout.next_position(None))
 
-    def next_position(self, component: Component | None = None) -> (int, int):
+    def next_position(self, component: Component | None = None) -> tuple[int, int]:
         if component is None:
             return self._next_position
         x, y = deepcopy(self._next_position)

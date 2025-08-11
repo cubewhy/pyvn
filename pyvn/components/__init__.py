@@ -83,7 +83,7 @@ class Component(ABC):
     def on_mouse_out(self, event: MouseOutEvent) -> None:
         pass
 
-    def on_mouse_up(self, event: MouseOutEvent) -> None:
+    def on_mouse_up(self, event: MouseUpEvent) -> None:
         pass
 
     def on_mouse_down(self, event: MouseDownEvent) -> None:
@@ -93,20 +93,20 @@ class Component(ABC):
         self._clicked = True
 
     @abstractmethod
-    def render(self, renderer: Renderer, position: (int, int)) -> None:
+    def render(self, renderer: Renderer, position: tuple[int, int]) -> None:
         pass
 
     @abstractmethod
-    def get_size(self) -> (int, int):
+    def get_size(self) -> tuple[int, int]:
         pass
 
-    def get_position(self) -> (int, int):
+    def get_position(self) -> tuple[int, int]:
         return self.x, self.y
 
-    def set_position(self, pos: (int, int)):
+    def set_position(self, pos: tuple[int, int]):
         self.x, self.y = pos
 
-    def is_hovererd(self, mouse_pos: (int, int)) -> bool:
+    def is_hovererd(self, mouse_pos: tuple[int, int]) -> bool:
         comp_width, comp_height = self.get_size_with_padding()
         box = Box(self.x, self.y, comp_width, comp_height)
         return (
@@ -124,7 +124,7 @@ class Component(ABC):
         )
         self.render(renderer, position_with_padding)
 
-    def get_size_with_padding(self) -> (int, int):
+    def get_size_with_padding(self) -> tuple[int, int]:
         width, height = self.get_size()
         # add padding to size
         return (
@@ -149,7 +149,7 @@ class Component(ABC):
         if bottom is not None:
             self._padding.bottom = bottom
         if left is not None:
-            self._padding.right = right
+            self._padding.right = left
         return self
 
     def padding_top(self, top: int) -> Self:

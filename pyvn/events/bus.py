@@ -3,7 +3,7 @@ from typing import Callable, List, TypeVar
 from pyvn.components import Component
 from pyvn.events import Event
 
-EventGeneric = TypeVar("E", bound=Event)
+EventGeneric = TypeVar("EventGeneric", bound=Event)
 EventHandler = Callable[[EventGeneric], None]
 
 
