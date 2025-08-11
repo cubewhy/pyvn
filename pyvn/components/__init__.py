@@ -50,6 +50,7 @@ class Component(ABC):
         self.x = 0
         self.y = 0
         self.ui: UiLike | None = None
+        self._clicked = False
 
     def handle_event(self, event: Event) -> None:
         if isinstance(event, MouseEvent):
@@ -89,7 +90,7 @@ class Component(ABC):
         pass
 
     def on_clicked(self, event: MouseClickedEvent) -> None:
-        pass
+        self._clicked = True
 
     @abstractmethod
     def render(self, renderer: Renderer, position: (int, int)) -> None:
@@ -166,3 +167,9 @@ class Component(ABC):
     def padding_left(self, left: int) -> Self:
         self._padding.left = left
         return self
+
+    def is_clicked(self) -> bool:
+        if self._clicked:
+            self._clicked = False
+            return True
+        return False

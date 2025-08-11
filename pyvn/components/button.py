@@ -10,7 +10,7 @@ class Button(Component):
         super().__init__()
         self._text = text
         self._text_color = (255, 255, 255)
-        self._clicked = False
+        self._hover_color = ()
 
     def render(self, renderer: Renderer, position: (int, int)) -> None:
         renderer.render_text(position, self._text, self.font, self._text_color)
@@ -28,11 +28,5 @@ class Button(Component):
     def on_mouse_out(self, event: MouseOutEvent) -> None:
         self._text_color = (255, 255, 255)
         
-    def on_clicked(self, event: MouseClickedEvent) -> None:
-        self._clicked = True
 
-    def is_clicked(self) -> bool:
-        if self._clicked:
-            self._clicked = False
-            return True
-        return False
+
