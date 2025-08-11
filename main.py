@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from pyvn import create_game_window
 from pyvn.components.button import Button
+from pyvn.components.label import Label
 from pyvn.layouts.vertical import VerticalLayout
 from pyvn.ui import UiLike
 
@@ -15,9 +16,12 @@ def game_loop(ui: UiLike, state: AppState):
     layout = VerticalLayout()
 
     ui.set_base_layout(layout)
-    if layout.add(Button("Click me " + str(state.num_counter)).padding(10).clicked_color((255, 255, 0))).is_clicked():
+    
+    layout.add(Label(f"Count: {state.num_counter}").text_color((255, 255, 0)))
+    
+    if layout.add(Button("Click me!").padding(10, 10, 10, 10)).is_clicked():
         # add the add counter
-        state.num_counter += 100
+        state.num_counter += 1
 
     if layout.add(Button(state.btn1_text)).is_clicked():
         state.btn1_text = "Hello"
