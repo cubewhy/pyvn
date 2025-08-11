@@ -1,7 +1,8 @@
 from dataclasses import dataclass
-from pyvn import GameUi, create_game_window
+from pyvn import create_game_window
 from pyvn.components.button import Button
 from pyvn.layouts.vertical import VerticalLayout
+from pyvn.ui import UiLike
 
 
 @dataclass
@@ -9,14 +10,14 @@ class AppState:
     num_counter: int = 0
 
 
-def game_loop(ui: GameUi, state: AppState):
-    layout = VerticalLayout() 
+def game_loop(ui: UiLike, state: AppState):
+    layout = VerticalLayout()
 
     ui.set_base_layout(layout)
-    if layout.add(Button("Click me")).is_clicked():
+    if layout.add(Button("Click me").padding(10)).is_clicked():
         # add the add counter
         state.num_counter += 1
-        
+
     if layout.add(Button("Click me")).is_clicked():
         # add the add counter
         state.num_counter += 1

@@ -1,18 +1,10 @@
 from abc import ABC, abstractmethod
 from typing import List, Self
 
-from pyvn import dataclass
 from pyvn.components import Component
 from pyvn.events.bus import EventGeneric
-from pyvn.events.mouse import MouseEvent, MouseOutEvent, MouseOverEvent
-
-
-@dataclass
-class Box:
-    x: int
-    y: int
-    width: int
-    height: int
+from pyvn.events.mouse import MouseDownEvent, MouseEvent, MouseOutEvent, MouseOverEvent
+from pyvn.ui import UiLike
 
 
 class Layout(ABC):
@@ -22,10 +14,17 @@ class Layout(ABC):
         self.renderer = None
         self.components: List[Component] = []
         self.hovered_components: List[Component] = []
+        self.focused_component: Component | None = None
+        self.ui:UiLike = None
+        if parent_layout is not None:
+            self.ui = parent_layout.ui
 
     def add(self, component: Component) -> Component:
         self.components.append(component)
         return component
+
+    def set_ui(self, ui: UiLike) -> None:
+        self.ui = ui
 
     @abstractmethod
     def next_position(self) -> (int, int):
@@ -35,24 +34,27 @@ class Layout(ABC):
         if isinstance(event, MouseEvent):
             mouse_pos = event.mouse_x, event.mouse_y
             for component in self.components:
-                comp_x, comp_y = component.get_position()
-                comp_width, comp_height = component.get_size_with_padding()
-                box = Box(comp_x, comp_y, comp_width, comp_height)
-                if mouse_pos[0] > box.x and mouse_pos[0] < box.x + box.width:
-                    if mouse_pos[1] > box.y and mouse_pos[1] < box.y + box.height:
-                        # The rect was hovered
-                        if component not in self.hovered_components:
-                            component.on_mouseover(MouseOverEvent(event))
-                            self.hovered_components.append(component)
-                    else:
-                        # not hovered
-                        if component in self.hovered_components:
-                            component.on_mouseout(MouseOutEvent(event))
-                            self.hovered_components.remove(component)
-        # TODO: handle mouse click event
-        
-    def apply_positions(self) -> None:
+                if component.is_hovererd(mouse_pos):
+                    # The rect was hovered
+                    if component not in self.hovered_components:
+                        component.on_mouse_over(
+                            MouseOverEvent(event.mouse_x, event.mouse_y)
+                        )
+                        self.hovered_components.append(component)
+                else:
+                    # not hovered
+                    if component in self.hovered_components:
+                        component.on_mouse_out(
+                            MouseOutEvent(event.mouse_x, event.mouse_y)
+                        )
+                        self.hovered_components.remove(component)
+        elif isinstance(event, MouseDownEvent):
+            for component in self.hovered_components:
+                component.on_mouse_down()
+
+    def pre_render(self) -> None:
         for component in self.components:
+            component.set_ui(self.ui)
             component.set_position(self.next_position())
 
     def render(self) -> None:

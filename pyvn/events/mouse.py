@@ -6,16 +6,33 @@ from pyvn.events import Event
 class MouseEvent(Event):
     mouse_x: int
     mouse_y: int
-    
+
+
 @dataclass
 class MouseMoveEvent(Event):
-    mouse_event: MouseEvent
-    
+    mouse_x: int
+    mouse_y: int
+
 
 @dataclass
 class MouseOverEvent(Event):
-    mouse_event: MouseEvent
+    mouse_x: int
+    mouse_y: int
+
 
 @dataclass
 class MouseOutEvent(Event):
-    mouse_event: MouseEvent
+    mouse_x: int
+    mouse_y: int
+
+
+@dataclass
+class MouseDownEvent(Event):
+    mouse_x: int
+    mouse_y: int
+
+
+@dataclass
+class MouseUpEvent(Event):
+    mouse_x: int
+    mouse_y: int

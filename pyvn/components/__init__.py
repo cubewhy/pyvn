@@ -1,11 +1,16 @@
+from __future__ import annotations
+
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from typing import Self
+from typing import Self, TYPE_CHECKING
 
 import pygame
 
 from pyvn.events.mouse import MouseOutEvent, MouseOverEvent
-from pyvn.renderers import Renderer
+
+if TYPE_CHECKING:
+    from pyvn.renderers import Renderer
+    from pyvn.ui import UiLike
 
 
 @dataclass
@@ -14,6 +19,14 @@ class Padding:
     right: int = 0
     bottom: int = 0
     left: int = 0
+
+
+@dataclass
+class Box:
+    x: int
+    y: int
+    width: int
+    height: int
 
 
 class Component(ABC):
@@ -28,11 +41,15 @@ class Component(ABC):
 
         self.x = 0
         self.y = 0
+        self.ui: UiLike | None = None
 
-    def on_mouseover(self, event: MouseOverEvent) -> None:
+    def set_ui(self, ui: UiLike) -> None:
+        self.ui = ui
+
+    def on_mouse_over(self, event: MouseOverEvent) -> None:
         pass
 
-    def on_mouseout(self, event: MouseOutEvent) -> None:
+    def on_mouse_out(self, event: MouseOutEvent) -> None:
         pass
 
     @abstractmethod
@@ -48,6 +65,17 @@ class Component(ABC):
 
     def set_position(self, pos: (int, int)):
         self.x, self.y = pos
+
+    def is_hovererd(self, mouse_pos: (int, int)) -> bool:
+        comp_x, comp_y = self.get_position()
+        comp_width, comp_height = self.get_size_with_padding()
+        box = Box(comp_x, comp_y, comp_width, comp_height)
+        return (
+            mouse_pos[0] > box.x
+            and mouse_pos[0] < box.x + box.width
+            and mouse_pos[1] > box.y
+            and mouse_pos[1] < box.y + box.height
+        )
 
     def do_render(self, renderer: Renderer) -> None:
         # apply padding to position

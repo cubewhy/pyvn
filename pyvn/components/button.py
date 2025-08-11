@@ -22,10 +22,10 @@ class Button(Component):
         self._text = text
         return self
 
-    def on_mouseover(self, event: MouseOverEvent) -> None:
+    def on_mouse_over(self, event: MouseOverEvent) -> None:
         self._text_color = (14, 237, 237)
-    
-    def on_mouseout(self, event: MouseOutEvent) -> None:
+
+    def on_mouse_out(self, event: MouseOutEvent) -> None:
         self._text_color = (255, 255, 255)
 
     def is_clicked(self) -> bool:

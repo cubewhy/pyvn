@@ -3,8 +3,9 @@ from typing import Callable, Generic, TypeVar
 import pygame
 
 from pyvn.events.bus import EventBus
-from pyvn.events.mouse import MouseEvent, MouseMoveEvent
-from pyvn.ui import GameUi
+from pyvn.events.mouse import MouseDownEvent, MouseEvent, MouseMoveEvent, MouseUpEvent
+from pyvn.ui import UiLike
+from pyvn.ui.pg_impl import GameUi
 
 
 T = TypeVar("T")
@@ -16,17 +17,17 @@ class InternalState:
 
 
 def process_mouse_events(eventbus: EventBus, internal_state: InternalState):
-    mouse_pos = pygame.mouse.get_pos()
-    mouse_event = MouseEvent(mouse_pos[0], mouse_pos[1])
+    mouse_x, mouse_y = pygame.mouse.get_pos()
+    mouse_event = MouseEvent(mouse_x, mouse_y)
     eventbus.trigger_event(mouse_event)
-    if internal_state.last_mouse_pos != mouse_pos:
+    if internal_state.last_mouse_pos != (mouse_x, mouse_y):
         # mouse pos changed, trigger the event
-        eventbus.trigger_event(MouseMoveEvent(mouse_event))
-    internal_state.last_mouse_pos = mouse_pos
+        eventbus.trigger_event(MouseMoveEvent(mouse_x, mouse_y))
+    internal_state.last_mouse_pos = (mouse_x, mouse_y)
 
 
 def create_game_window(
-    game_loop: Callable[[GameUi, Generic[T]], None],
+    game_loop: Callable[[UiLike, Generic[T]], None],
     state: Generic[T],
     *,
     title: str = "Python Visual Novel Framework",
@@ -47,23 +48,29 @@ def create_game_window(
     while running:
         ui = GameUi(screen)
         eventbus = ui.get_eventbus()
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                running = False
-
 
         # do render
         # 0x[r][g][b]
-        screen.fill(0x000000)
         # call the render logic here
         game_loop(ui, state)
-        
+
         # Pre render
         ui.pre_render()
 
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                mouse_x, mouse_y = pygame.mouse.get_pos()
+                eventbus.trigger_event(MouseDownEvent(mouse_x, mouse_y))
+            elif event.type == pygame.MOUSEBUTTONUP:
+                mouse_x, mouse_y = pygame.mouse.get_pos()
+                eventbus.trigger_event(MouseUpEvent(mouse_x, mouse_y))
+
         process_mouse_events(eventbus, internal_state)
-        
+
         # Finally let GameUi to render the components
+        screen.fill(0x000000)
         ui.render()
 
         pygame.display.flip()
