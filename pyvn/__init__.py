@@ -2,7 +2,6 @@ from dataclasses import dataclass
 from typing import Callable, Generic, TypeVar
 import pygame
 
-from pyvn.components import Component
 from pyvn.events.bus import EventBus
 from pyvn.events.mouse import (
     MouseClickedEvent,

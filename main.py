@@ -15,7 +15,7 @@ def game_loop(ui: UiLike, state: AppState):
     layout = VerticalLayout()
 
     ui.set_base_layout(layout)
-    if layout.add(Button("Click me " + str(state.num_counter)).padding(10)).is_clicked():
+    if layout.add(Button("Click me " + str(state.num_counter)).padding(10).clicked_color((255, 255, 0))).is_clicked():
         # add the add counter
         state.num_counter += 100
 

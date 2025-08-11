@@ -1,5 +1,5 @@
 from copy import deepcopy
-from pyvn import Component
+from pyvn.components import Component
 from pyvn.layouts import Layout
 
 
