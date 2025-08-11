@@ -10,16 +10,16 @@ EventHandler = Callable[[EventGeneric], None]
 class EventBus(object):
     def __init__(self) -> None:
         super().__init__()
-        self.handlers: List[EventHandler] = []
+        self.handlers: List[EventHandler[Event]] = []
         self.event_queue: List[Event] = []
 
-    def add_handler(self, handler: EventHandler) -> None:
+    def add_handler(self, handler: EventHandler[Event]) -> None:
         self.handlers.append(handler)
 
-    def remove_handler(self, handler: EventHandler) -> None:
+    def remove_handler(self, handler: EventHandler[Event]) -> None:
         self.handlers.remove(handler)
 
-    def add_event(self, event: EventGeneric) -> None:
+    def add_event(self, event: Event) -> None:
         self.event_queue.append(event)
 
     def trigger_events(self, component: Component) -> None:

@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Callable, Generic, TypeVar
+from typing import Callable, TypeVar
 import pygame
 
 from pyvn.events.bus import EventBus

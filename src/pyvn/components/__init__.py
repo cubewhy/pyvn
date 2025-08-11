@@ -149,7 +149,7 @@ class Component(ABC):
         if bottom is not None:
             self._padding.bottom = bottom
         if left is not None:
-            self._padding.right = left
+            self._padding.left = left
         return self
 
     def padding_top(self, top: int) -> Self:
