@@ -1,5 +1,6 @@
 from typing import Callable, List, TypeVar
 
+from pyvn.components import Component
 from pyvn.events import Event
 
 EventGeneric = TypeVar("E", bound=Event)
@@ -10,6 +11,7 @@ class EventBus(object):
     def __init__(self) -> None:
         super().__init__()
         self.handlers: List[EventHandler] = []
+        self.event_queue: List[Event] = []
 
     def add_handler(self, handler: EventHandler) -> None:
         self.handlers.append(handler)
@@ -17,6 +19,13 @@ class EventBus(object):
     def remove_handler(self, handler: EventHandler) -> None:
         self.handlers.remove(handler)
 
-    def trigger_event(self, event: EventGeneric) -> None:
-        for handler in self.handlers:
-            handler(event)
+    def add_event(self, event: EventGeneric) -> None:
+        self.event_queue.append(event)
+
+    def trigger_events(self, component: Component) -> None:
+        for event in self.event_queue:
+            if component.ui is not None:
+                component.handle_event(event)
+
+    def clear_events(self):
+        self.event_queue.clear()

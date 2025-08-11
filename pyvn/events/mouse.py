@@ -36,3 +36,9 @@ class MouseDownEvent(Event):
 class MouseUpEvent(Event):
     mouse_x: int
     mouse_y: int
+
+
+@dataclass
+class MouseClickedEvent(Event):
+    mouse_x: int
+    mouse_y: int

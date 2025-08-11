@@ -1,6 +1,6 @@
 from typing import Self
 
-from pyvn.events.mouse import MouseOutEvent, MouseOverEvent
+from pyvn.events.mouse import MouseClickedEvent, MouseOutEvent, MouseOverEvent
 from pyvn.renderers import Renderer
 from pyvn.components import Component
 
@@ -27,6 +27,9 @@ class Button(Component):
 
     def on_mouse_out(self, event: MouseOutEvent) -> None:
         self._text_color = (255, 255, 255)
+        
+    def on_clicked(self, event: MouseClickedEvent) -> None:
+        self._clicked = True
 
     def is_clicked(self) -> bool:
         if self._clicked:

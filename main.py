@@ -8,19 +8,19 @@ from pyvn.ui import UiLike
 @dataclass
 class AppState:
     num_counter: int = 0
+    btn1_text: str = "Example btn"
 
 
 def game_loop(ui: UiLike, state: AppState):
     layout = VerticalLayout()
 
     ui.set_base_layout(layout)
-    if layout.add(Button("Click me").padding(10)).is_clicked():
+    if layout.add(Button("Click me " + str(state.num_counter)).padding(10)).is_clicked():
         # add the add counter
-        state.num_counter += 1
+        state.num_counter += 100
 
-    if layout.add(Button("Click me")).is_clicked():
-        # add the add counter
-        state.num_counter += 1
+    if layout.add(Button(state.btn1_text)).is_clicked():
+        state.btn1_text = "Hello"
 
 
 def main():

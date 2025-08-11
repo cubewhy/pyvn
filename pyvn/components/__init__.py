@@ -6,7 +6,15 @@ from typing import Self, TYPE_CHECKING
 
 import pygame
 
-from pyvn.events.mouse import MouseOutEvent, MouseOverEvent
+from pyvn.events import Event
+from pyvn.events.mouse import (
+    MouseClickedEvent,
+    MouseDownEvent,
+    MouseEvent,
+    MouseOutEvent,
+    MouseOverEvent,
+    MouseUpEvent,
+)
 
 if TYPE_CHECKING:
     from pyvn.renderers import Renderer
@@ -43,6 +51,28 @@ class Component(ABC):
         self.y = 0
         self.ui: UiLike | None = None
 
+    def handle_event(self, event: Event) -> None:
+        if isinstance(event, MouseEvent):
+            mouse_pos = event.mouse_x, event.mouse_y
+            if self.is_hovererd(mouse_pos):
+                # The rect was hovered
+                self.on_mouse_over(MouseOverEvent(event.mouse_x, event.mouse_y))
+            else:
+                # not hovered
+                self.on_mouse_out(MouseOutEvent(event.mouse_x, event.mouse_y))
+        elif isinstance(event, MouseDownEvent):
+            mouse_pos = event.mouse_x, event.mouse_y
+            if self.is_hovererd(mouse_pos):
+                self.on_mouse_down(event)
+        elif isinstance(event, MouseUpEvent):
+            mouse_pos = event.mouse_x, event.mouse_y
+            if self.is_hovererd(mouse_pos):
+                self.on_mouse_up(event)
+        elif isinstance(event, MouseClickedEvent):
+            mouse_pos = event.mouse_x, event.mouse_y
+            if self.is_hovererd(mouse_pos):
+                self.on_clicked(event)
+
     def set_ui(self, ui: UiLike) -> None:
         self.ui = ui
 
@@ -50,6 +80,15 @@ class Component(ABC):
         pass
 
     def on_mouse_out(self, event: MouseOutEvent) -> None:
+        pass
+
+    def on_mouse_up(self, event: MouseOutEvent) -> None:
+        pass
+
+    def on_mouse_down(self, event: MouseDownEvent) -> None:
+        pass
+
+    def on_clicked(self, event: MouseClickedEvent) -> None:
         pass
 
     @abstractmethod
@@ -67,9 +106,8 @@ class Component(ABC):
         self.x, self.y = pos
 
     def is_hovererd(self, mouse_pos: (int, int)) -> bool:
-        comp_x, comp_y = self.get_position()
         comp_width, comp_height = self.get_size_with_padding()
-        box = Box(comp_x, comp_y, comp_width, comp_height)
+        box = Box(self.x, self.y, comp_width, comp_height)
         return (
             mouse_pos[0] > box.x
             and mouse_pos[0] < box.x + box.width
